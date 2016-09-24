@@ -13,7 +13,7 @@
     "ava": "^0.16.0",
     "execa": "^0.4.0",
     "lodash": "^4.15.0",
-    "shipment": "^7.0.0",
+    "shipment": "github:launchdeckio/shipment#dev",
     "test-console": "^1.0.0"
   },
   "scripts": {

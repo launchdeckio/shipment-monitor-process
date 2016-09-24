@@ -14,11 +14,11 @@ module.exports = (context, process) => context.withScope({
     // Listen to both the stdout and the stderr streams
     _.forEach(['stdout', 'stderr'], stream => process[stream].on('data', line => {
 
-        context.report('info', {[stream]: line});
+        context.reporter.report({[stream]: line});
     }));
 
     // Report the completion of the process
-    return process.await().then(exitCode => context.report('info', {exit: exitCode}));
+    return process.await().then(exitCode => context.reporter.report({exit: exitCode}));
 });
 
 module.exports.Process = require('./Process');
