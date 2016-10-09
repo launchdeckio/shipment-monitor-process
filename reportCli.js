@@ -14,7 +14,7 @@ module.exports = (parser, options = {}) => {
         parser.on('begin', context => {
             if (context.scope.process) {
                 let process = context.scope.process;
-                console.log(`${process.cwd}${chalk.grey('@')}${process.host} ${chalk.grey('$')} ${chalk.bold(process.command)}`);
+                console.log(`\n${process.cwd}${chalk.grey('@')}${process.host} ${chalk.grey('$')} ${chalk.bold(process.command)}`);
             }
         });
 
