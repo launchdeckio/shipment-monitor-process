@@ -12,14 +12,15 @@ module.exports = (context, process) => context.withScope({
 }, context => {
 
     // Listen to both the stdout and the stderr streams
-    _.forEach(['stdout', 'stderr'], stream => process[stream].on('data', line => {
+    _.forEach(['stdout', 'stderr'], stream => process[stream]
+        .on('data', line => {
 
-        context.reporter.report({[stream]: line});
-    }));
+            context.reporter.report({[stream]: line});
+        }));
 
     // Report the completion of the process
     return process.await().then(exitCode => context.reporter.report({exit: exitCode}));
 });
 
 module.exports.reportCli = require('./reportCli');
-module.exports.Process = require('./Process');
+module.exports.Process   = require('./Process');

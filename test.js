@@ -68,7 +68,7 @@ test.serial('CLI reporter', async t => {
         cli: true
     });
 
-    reportCli(context.reporter.parser, {});
+    reportCli(context.reporter.parser, {prepend: true});
 
     const output = await capture(async() => {
 

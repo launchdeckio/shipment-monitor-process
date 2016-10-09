@@ -1,7 +1,9 @@
 'use strict';
 
+const chalk = require('chalk');
+const _     = require('lodash');
+
 const events = require('./events');
-const chalk  = require('chalk');
 
 const log = fn => (data, info) => console.log(fn(data, info));
 
@@ -16,10 +18,13 @@ module.exports = (parser, options = {}) => {
             }
         });
 
+        let stderrPrefix = options.prepend ? '[stderr] ' : '';
+        let stdoutPrefix = options.prepend ? '[stdout] ' : '';
+
         parser.useCombine({
 
-            [events.STDERR]: log(stderr => `[stderr] ${stderr}`),
-            [events.STDOUT]: log(stdout => `[stdout] ${stdout}`)
+            [events.STDERR]: stderr => process.stderr.write(stderrPrefix + stderr),
+            [events.STDOUT]: stdout => process.stdout.write(stdoutPrefix + stdout),
         });
     }
 };
