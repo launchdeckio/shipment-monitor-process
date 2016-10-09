@@ -3,27 +3,21 @@ import exec from 'execa';
 import {some} from 'lodash';
 
 import {Context} from 'shipment';
-
-import monitor, {Process} from './';
+import monitor, {Process, reportCli} from './';
 
 import {stdout} from 'test-console';
 
-let context;
+let context, reporter;
 
-test.beforeEach(t => {
-    context = new Context();
-});
+const contains = (stdout, line) => some(stdout, l => l.match(line));
 
-test(async t => {
-
-    // Hijack stdout
-    let inspect = stdout.inspect();
+const doEcho = () => {
 
     // Spawn child process (shell)
     let childProcess = exec.shell('echo "hoi"');
 
     // Instantiate Process handle
-    let p = new Process('pwd', {
+    let p = new Process('echo "hoi"', {
         cwd:    process.cwd(),
         stdout: childProcess.stdout,
         stderr: childProcess.stderr
@@ -32,18 +26,56 @@ test(async t => {
     // Listen to child process completion
     childProcess.then(() => p.done(0), err => p.done(err.code));
 
-    // Await process completion
-    await(monitor(context, p));
+    return p;
+};
+
+const capture = async(fn, {silent = false} = {}) => {
+
+    // Hijack stdout
+    let inspect = stdout.inspect();
+
+    await fn();
 
     // Restore stdout
     inspect.restore();
 
     // Log output for debugging
-    console.log(inspect.output.join(''));
+    if (!silent) console.log(inspect.output.join(''));
+
+    // Return output;
+    return inspect.output;
+};
+
+test.serial('monitor', async t => {
+
+    context = new Context();
+
+    const output = await capture(async() => {
+
+        await(monitor(context, doEcho()));
+    });
 
     // Assert that the output contains a formatted object with stdout: hoi
-    t.true(some(inspect.output, line => {
+    t.true(some(output, line => {
         let obj = JSON.parse(line);
         return obj.stdout && obj.stdout.match(/hoi/);
     }));
+});
+
+test.serial('CLI reporter', async t => {
+
+    context = new Context({
+        cli: true
+    });
+
+    reportCli(context.reporter.parser, {});
+
+    const output = await capture(async() => {
+
+        await(monitor(context, doEcho()));
+    });
+
+    t.true(contains(output, /\[stdout] hoi/));
+
+    t.true(contains(output, /echo "hoi"/));
 });

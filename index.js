@@ -21,4 +21,5 @@ module.exports = (context, process) => context.withScope({
     return process.await().then(exitCode => context.reporter.report({exit: exitCode}));
 });
 
+module.exports.reportCli = require('./reportCli');
 module.exports.Process = require('./Process');
