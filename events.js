@@ -3,5 +3,6 @@
 module.exports = {
 
     STDOUT: 'stdout',
-    STDERR: 'stderr'
+    STDERR: 'stderr',
+    EXIT:   'exit',
 };

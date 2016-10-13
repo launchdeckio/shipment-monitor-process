@@ -1,15 +1,12 @@
 'use strict';
 
 const chalk = require('chalk');
-const _     = require('lodash');
 
 const events = require('./events');
 
-const log = fn => (data, info) => console.log(fn(data, info));
-
 module.exports = (parser, options = {}) => {
 
-    if (!options.silent) {
+    if (options.cli && !options.silent) {
 
         parser.on('begin', context => {
             if (context.scope.process) {

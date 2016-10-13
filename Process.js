@@ -41,3 +41,7 @@ class Process extends EventEmitter {
 }
 
 module.exports = Process;
+
+module.exports.scoped = (context, process, fn) => context.withScope({
+    process: {command: process.command, cwd: process.cwd, host: process.host}
+}, fn);
