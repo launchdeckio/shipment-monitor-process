@@ -6,12 +6,14 @@ const events = require('./events');
 
 module.exports = (parser, options = {}) => {
 
-    if (options.cli && !options.silent) {
+    if (options.format) {
 
         parser.on('begin', context => {
             if (context.scope.process) {
-                let process = context.scope.process;
-                console.log(`\n${process.cwd}${chalk.grey('@')}${process.host} ${chalk.grey('$')} ${chalk.bold(process.command)}`);
+                let process    = context.scope.process;
+                let hostSuffix = (process.host && process.host != 'localhost') ?
+                    ` ${chalk.grey('@')} ${process.host}` : '';
+                console.log(`\n${process.cwd}${hostSuffix} ${chalk.grey('$')} ${chalk.bold(process.command)}`);
             }
         });
 
