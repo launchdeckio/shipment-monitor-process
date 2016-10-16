@@ -24,6 +24,10 @@ module.exports = (parser, options = {}) => {
 
             [events.STDERR]: stderr => process.stderr.write(stderrPrefix + stderr),
             [events.STDOUT]: stdout => process.stdout.write(stdoutPrefix + stdout),
+            [events.EXIT]:   (exitCode, info) => {
+                let code = exitCode === 0 ? chalk.green(exitCode) : chalk.red(exitCode);
+                console.log(`${code} ${chalk.grey(`(${info.context.scope.process.command})`)}`);
+            }
         });
     }
 };
