@@ -3,21 +3,26 @@ import exec from 'execa';
 import {some} from 'lodash';
 
 import {Context} from 'shipment';
-import monitor, {Process, reportCli} from './';
+import monitor, {Process} from './';
+
+import eventFactories from './eventFactories';
+import eventReducers from './eventReducers';
 
 import {stdout} from 'test-console';
 
 let context, reporter;
+
+const SubContext = Context.extend(Context, eventFactories, eventReducers);
 
 const contains = (stdout, line) => some(stdout, l => l.match(line));
 
 const doEcho = () => {
 
     // Spawn child process (shell)
-    let childProcess = exec.shell('echo "hoi"');
+    let childProcess = exec.shell('echo "hoi" "hallo"');
 
     // Instantiate Process handle
-    let p = new Process('echo "hoi"', {
+    let p = new Process('echo "hoi" "hallo"', {
         cwd:    process.cwd(),
         stdout: childProcess.stdout,
         stderr: childProcess.stderr
@@ -48,7 +53,7 @@ const capture = async(fn, {silent = false} = {}) => {
 
 test.serial('monitor', async t => {
 
-    context = new Context();
+    context = new SubContext();
 
     const output = await capture(async() => {
 
@@ -58,24 +63,22 @@ test.serial('monitor', async t => {
     // Assert that the output contains a formatted object with stdout: hoi
     t.true(some(output, line => {
         let obj = JSON.parse(line);
-        return obj.stdout && obj.stdout.match(/hoi/);
+        return obj.stdout && obj.stdout.match(/hoi hallo/);
     }));
 });
 
 test.serial('CLI reporter', async t => {
 
-    context = new Context({
+    context = new SubContext({
         cli: true
     });
-
-    reportCli(context.reporter.parser, {prepend: true});
 
     const output = await capture(async() => {
 
         await(monitor(context, doEcho()));
     });
 
-    t.true(contains(output, /\[stdout] hoi/));
+    t.true(contains(output, /hoi hallo/));
 
-    t.true(contains(output, /echo "hoi"/));
+    t.true(contains(output, /echo "hoi" "hallo"/));
 });
