@@ -10,9 +10,10 @@ module.exports = (parser, options = {}) => {
 
         parser.on('begin', context => {
             if (context.scope.process) {
-                let process = context.scope.process;
-                let cwd     = (process.cwd) ? `${chalk.blue(process.cwd)} ` : '';
-                let host    = (process.host && process.host != 'localhost') ? `${chalk.green(process.host)} ` : '';
+                let process  = context.scope.process;
+                let cwd      = (process.cwd) ? `${chalk.blue(process.cwd)} ` : '';
+                let hostName = (process.host ? (process.host.name ? process.host.name : process.host) : null);
+                let host     = (hostName && hostName != 'localhost') ? `${chalk.green(hostName)} ` : '';
                 console.log(`\n${host}${cwd}${chalk.grey('$')} ${chalk.bold(process.command)}`);
             }
         });
