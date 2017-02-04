@@ -15,7 +15,7 @@ module.exports = (context, process) => scoped(context, process, context => {
     _.forEach(['stdout', 'stderr'], stream => process[stream]
         .on('data', line => {
 
-            context.emit[stream](line);
+            context.emit[stream](line.toString());
         }));
 
     // Report the completion of the process

@@ -9,10 +9,10 @@
     "defa": "^1.0.0"
   },
   "devDependencies": {
-    "ava": "^0.16.0",
-    "execa": "^0.4.0",
+    "ava": "^0.18.1",
+    "execa": "^0.6.0",
     "lodash": "^4.15.0",
-    "shipment": "github:launchdeckio/shipment#dev",
+    "shipment": "^8.1.0",
     "test-console": "^1.0.0"
   },
   "scripts": {
