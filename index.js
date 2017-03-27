@@ -22,7 +22,7 @@ module.exports = (context, process) => scoped(context, process, context => {
     return process.await().then(exitCode => {
         context.emit[events.EXIT](exitCode);
         if (exitCode !== 0) {
-            const error = new Error(`Process exited with ${exitCode}`);
+            const error = new Error(`Process '${process.command}' exited with ${exitCode}`);
             error.code  = exitCode;
             throw error;
         }
