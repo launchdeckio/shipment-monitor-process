@@ -21,21 +21,22 @@ class Process extends EventEmitter {
         this.command = command;
 
         if (!(options instanceof ChildProcess)) {
-            options = defaults({}, options, {
+            options   = defaults({}, options, {
                 cwd:    null,
                 host:   'localhost',
                 stdout: null,
                 stderr: null
             });
+            this.host = options.host;
+            this.cwd  = options.cwd;
         }
 
-        this.host   = options.host;
-        this.cwd    = options.cwd;
         this.stdout = options.stdout;
         this.stderr = options.stderr;
 
         if (options instanceof ChildProcess) {
             this.childProcess = options;
+            this.host         = 'localhost';
             this.listen(options);
         }
 
