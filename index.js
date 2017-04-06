@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+const {forEach, isUndefined} = require('lodash');
 
 const events = require('./events');
 const scoped = require('./Process').scoped;
@@ -13,7 +13,7 @@ const scoped = require('./Process').scoped;
 module.exports = (context, process) => scoped(context, process, context => {
 
     // Listen to both the stdout and the stderr streams
-    _.forEach(['stdout', 'stderr'], stream => process[stream]
+    forEach(['stdout', 'stderr'], stream => process[stream]
         .on('data', line => {
 
             context.emit[stream](line.toString());
@@ -30,7 +30,7 @@ module.exports = (context, process) => scoped(context, process, context => {
             throw error;
         }
 
-        if (signal !== null) {
+        if (!isUndefined(signal) && signal !== null) {
             const error  = new Error(`Process was terminated (${signal})`);
             error.signal = signal;
             throw error;
