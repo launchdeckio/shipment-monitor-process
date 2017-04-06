@@ -1,6 +1,7 @@
 'use strict';
 
-const _      = require('lodash');
+const _ = require('lodash');
+
 const events = require('./events');
 const scoped = require('./Process').scoped;
 
@@ -19,11 +20,19 @@ module.exports = (context, process) => scoped(context, process, context => {
         }));
 
     // Report the completion of the process
-    return process.await().then(exitCode => {
-        context.emit[events.EXIT](exitCode);
-        if (exitCode !== 0) {
-            const error = new Error(`Process '${process.command}' exited with ${exitCode}`);
-            error.code  = exitCode;
+    return process.await().then(({code, signal}) => {
+
+        context.emit[events.EXIT]({code, signal});
+
+        if (code !== 0) {
+            const error = new Error(`Process '${process.command}' exited with ${code}`);
+            error.code  = code;
+            throw error;
+        }
+
+        if (signal !== null) {
+            const error  = new Error(`Process was terminated (${signal})`);
+            error.signal = signal;
             throw error;
         }
     });

@@ -20,23 +20,29 @@ class Process extends EventEmitter {
             stderr: null
         });
 
-        this.command  = command;
-        this.cwd      = options.cwd;
-        this.host     = options.host;
-        this.stdout   = options.stdout;
-        this.stderr   = options.stderr;
-        this.running  = true;
-        this.exitCode = null;
+        this.command = command;
+        this.cwd     = options.cwd;
+        this.host    = options.host;
+        this.stdout  = options.stdout;
+        this.stderr  = options.stderr;
+
+        this.running = true;
+
+        this.code   = null; // exit code
+        this.signal = null; // exit signal
     }
 
-    done(exitCode) {
-        this.running  = false;
-        this.exitCode = exitCode;
-        this.emit('done', exitCode);
+    done(code, signal) {
+        this.running = false;
+
+        this.code   = code;
+        this.signal = signal;
+
+        this.emit('done', {code, signal});
     }
 
     await() {
-        return new Promise(resolve => this.on('done', exitCode => resolve(exitCode)));
+        return new Promise(resolve => this.on('done', resolve));
     }
 }
 
