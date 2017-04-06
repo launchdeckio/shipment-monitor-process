@@ -53,7 +53,7 @@ class Process extends EventEmitter {
      * @param childProcess
      */
     listen(childProcess) {
-        childProcess.on('exit', (code, signal) => this.done(code, signal));
+        childProcess.on('close', (code, signal) => this.done(code, signal));
         return this;
     }
 
