@@ -25,7 +25,10 @@ module.exports = (parser, options = {}) => {
 
             [events.STDERR]: stderr => process.stderr.write(stderrPrefix + stderr),
             [events.STDOUT]: stdout => process.stdout.write(stdoutPrefix + stdout),
-            [events.EXIT]:   ({code, signal}, info) => {
+            [events.EXIT]:   (exit, info) => {
+
+                const code   = exit.get('code');
+                const signal = exit.get('signal');
 
                 const notation = code !== null ?
                     (code === 0 ? chalk.green(code) : chalk.red(code)) :
