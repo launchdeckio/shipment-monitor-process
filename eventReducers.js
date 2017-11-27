@@ -31,7 +31,7 @@ module.exports = (parser, options = {}) => {
                 const signal = exit.get('signal');
 
                 const notation = code !== null ?
-                    (code === 0 ? chalk.green(code) : chalk.red(code)) :
+                    (code === 0 ? chalk.green('✓') : chalk.red(code)) :
                     chalk.red(signal);
 
                 console.log(`${notation} ${chalk.grey(`(${info.context.scope.process.command})`)}`);
