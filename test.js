@@ -10,8 +10,6 @@ import eventReducers from './eventReducers';
 
 import {stdout} from 'test-console';
 
-let context, reporter;
-
 const SubContext = Context.extend(Context, eventFactories, eventReducers);
 
 const contains = (stdout, line) => some(stdout, l => l.match(line));
@@ -53,7 +51,7 @@ const capture = async (fn, {silent = false} = {}) => {
 
 test.serial('monitor', async t => {
 
-    context = new SubContext();
+    const context = new SubContext();
 
     const output = await capture(async () => {
 
@@ -69,7 +67,7 @@ test.serial('monitor', async t => {
 
 test.serial('CLI reporter', async t => {
 
-    context = new SubContext({
+    const context = new SubContext({
         cli: true
     });
 
