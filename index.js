@@ -1,7 +1,5 @@
 'use strict';
 
-const {forEach, isUndefined} = require('lodash');
-
 const events  = require('./events');
 const Process = require('./Process');
 
@@ -13,18 +11,19 @@ const Process = require('./Process');
  */
 module.exports = (context, process, throws = true) => {
 
-    return context.withScope({process: Process.getScope(process)}, async context => {
+    return context.branch({process: Process.getScope(process)}).scoped(async context => {
 
         // Listen to both the stdout and the stderr streams
-        forEach(['stdout', 'stderr'], stream => process[stream]
-            .on('data', line => {
-                context.emit[stream](line.toString());
-            }));
+        ['stdout', 'stderr'].forEach(stream => {
+            process[stream].on('data', line => {
+                context.emit(events[stream](line.toString()));
+            });
+        });
 
         // Report the completion of the process
         const {code, signal} = await process.await();
 
-        context.emit[events.EXIT]({code, signal});
+        context.emit(events.exit({code, signal}));
 
         if (code !== 0 && throws) {
             const error = new Error(`Process '${process.command}' exited with ${code}`);
@@ -32,16 +31,13 @@ module.exports = (context, process, throws = true) => {
             throw error;
         }
 
-        if (!isUndefined(signal) && signal !== null && throws) {
+        if (signal && throws) {
             const error  = new Error(`Process was terminated (${signal})`);
             error.signal = signal;
             throw error;
         }
-    })
+    });
 };
 
-module.exports.events         = events;
-module.exports.eventReducers  = require('./eventReducers');
-module.exports.eventFactories = require('./eventFactories');
-
+module.exports.events  = events;
 module.exports.Process = require('./Process');

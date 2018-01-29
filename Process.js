@@ -1,9 +1,7 @@
 'use strict';
 
-const defaults     = require('defa');
 const ChildProcess = require('child_process').ChildProcess;
 const EventEmitter = require('events').EventEmitter;
-const Promise      = require('bluebird');
 
 /**
  * Generic structure to describe a process, hold standard output streams and track its completion / exitcode
@@ -21,12 +19,13 @@ class Process extends EventEmitter {
         this.command = command;
 
         if (!(options instanceof ChildProcess)) {
-            options   = defaults({}, options, {
+            options   = {
                 cwd:    null,
                 host:   'localhost',
                 stdout: null,
-                stderr: null
-            });
+                stderr: null,
+                ...options,
+            };
             this.host = options.host;
             this.cwd  = options.cwd;
         }

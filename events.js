@@ -2,7 +2,15 @@
 
 module.exports = {
 
-    STDOUT: 'stdout',
-    STDERR: 'stderr',
-    EXIT:   'exit',
+    stdout(stdout) {
+        return {stdout};
+    },
+
+    stderr(stderr) {
+        return {stderr};
+    },
+
+    exit({code, signal}) {
+        return {exit: {code, signal}};
+    },
 };
