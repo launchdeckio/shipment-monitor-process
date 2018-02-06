@@ -13,7 +13,7 @@ const cliFormatter = require('./cliFormatter');
  * @param {Process} process
  * @param {Boolean} [throws = true] Throw an error if the process exits with a non-zero exitcode?
  */
-module.exports = (context, process, throws = true) => {
+const monitor = (context, process, throws = true) => {
 
     return context.branch({process: Process.getScope(process)}).scoped(async context => {
 
@@ -45,6 +45,8 @@ module.exports = (context, process, throws = true) => {
     });
 };
 
+module.exports              = monitor;
+module.exports.monitor      = monitor;
 module.exports.events       = events;
 module.exports.cliFormatter = cliFormatter;
 module.exports.Process      = Process;
