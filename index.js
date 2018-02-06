@@ -1,7 +1,11 @@
 'use strict';
 
-const events  = require('./events');
-const Process = require('./Process');
+const split     = require('split');
+const {trimEnd} = require('lodash');
+
+const events       = require('./events');
+const Process      = require('./Process');
+const cliFormatter = require('./cliFormatter');
 
 /**
  * Report all process output within a dedicated SubContext
@@ -15,9 +19,11 @@ module.exports = (context, process, throws = true) => {
 
         // Listen to both the stdout and the stderr streams
         ['stdout', 'stderr'].forEach(stream => {
-            process[stream].on('data', line => {
-                context.emit(events[stream](line.toString()));
-            });
+            process[stream]
+                .pipe(split())
+                .on('data', line => {
+                    context.emit(events[stream](trimEnd(line.toString(), '\n')));
+                });
         });
 
         // Report the completion of the process
@@ -39,5 +45,6 @@ module.exports = (context, process, throws = true) => {
     });
 };
 
-module.exports.events  = events;
-module.exports.Process = require('./Process');
+module.exports.events       = events;
+module.exports.cliFormatter = cliFormatter;
+module.exports.Process      = Process;
