@@ -6,8 +6,6 @@ import monitor, {Process} from './';
 
 import {Context} from 'shipment';
 
-const contains = (stdout, line) => some(stdout, l => l.match(line));
-
 const spawn = (cmd = 'echo "hoi" "hallo"') => {
 
     // Spawn child process (shell)
@@ -25,7 +23,7 @@ const captureReceiver = () => {
 
 test.serial('monitor', async t => {
     const {receive, output} = captureReceiver();
-    const context = new Context({receive});
+    const context           = new Context({receive});
     await monitor(context, spawn());
     t.true(some(output, obj => {
         return obj.stdout && obj.stdout.match(/hoi hallo/);
@@ -39,7 +37,7 @@ test.serial('Non-zero exitcode', async t => {
 
 test.serial('SIGKILL', async t => {
     const process = spawn('sleep 10');
-    const child = process.childProcess;
+    const child   = process.childProcess;
     setTimeout(() => child.kill(), 100);
     await t.throws(monitor(new Context(), process));
 });

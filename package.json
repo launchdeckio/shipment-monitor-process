@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "ava": "^0.25.0",
-    "lodash": "^4.15.0",
+    "lodash": "^4.17.5",
     "shipment": "^10.0.1"
   },
   "scripts": {
